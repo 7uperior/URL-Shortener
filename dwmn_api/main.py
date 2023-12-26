@@ -25,8 +25,8 @@ def is_bitlink(url, token_api):
     bitlink = f"{parsed_url.netloc}{parsed_url.path}"
     endpoint = f"https://api-ssl.bitly.com/v4/bitlinks/{bitlink}"
     response = requests.get(endpoint, headers=headers)
-    if response.status_code == 200:
-        return True
+    if response.ok:
+        pass
 
 
 def main():
