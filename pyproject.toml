@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "dwmn-api"
+name = "url-shortener"
 version = "0.1.0"
 description = ""
 authors = ["Vadim Surin <7uperior@gmail.com>"]
