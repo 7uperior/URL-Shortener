@@ -30,7 +30,8 @@ def is_bitlink(url, api_token):
 
 
 def main():
-    url = input("Введите ссылку: ")
+    url = input("Enter the URL: ")
+
     api_token = os.environ["BITLY_API_TOKEN"]
 
     try:
@@ -39,7 +40,7 @@ def main():
         else:
             print(shorten_link(url, api_token))
     except requests.exceptions.HTTPError:
-        print("Вы ввели некорректную ссылку")
+        print("You have entered an incorrect URL")
 
 
 if __name__ == "__main__":

@@ -25,6 +25,6 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 COPY url-shortener ./url-shortener
 
-COPY "run.sh" .
+COPY "client.sh" ./
 RUN ["chmod", "+x", "./client.sh"]
 ENTRYPOINT [ "./client.sh" ]
