@@ -1,15 +1,17 @@
-# Use an official Python runtime as a parent image
+# Use Python 3.10 as the base image
 FROM python:3.10
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+RUN mkdir /URL-Shortener
+RUN mkdir /URL-Shortener/url-shortener/
 
-# Copy the current directory contents into the container at /usr/src/app
-COPY . /usr/src/app
+COPY /url-shortener /URL-Shortener/url-shortener/
+COPY pyproject.toml /URL-Shortener
+COPY .env /URL-Shortener
 
-# Install any needed packages specified in pyproject.toml
-RUN pip install poetry
-RUN poetry install
+WORKDIR /URL-Shortener
+ENV PYTHONPATH=${PYTHONPATH}:${PWD} 
 
-# Run main.py when the container launches
-CMD ["python", "./url-shortener/main.py"]
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
