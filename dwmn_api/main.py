@@ -3,8 +3,8 @@ import requests
 from urllib.parse import urlparse
 
 
-def shorten_link(url, token_api):
-    headers = {"Authorization": f"Bearer {token_api}"}
+def shorten_link(url, api_token):
+    headers = {"Authorization": f"Bearer {api_token}"}
     endpoint = "https://api-ssl.bitly.com/v4/bitlinks"
     response = requests.post(endpoint, headers=headers, json={"long_url": url})
     response.raise_for_status()
