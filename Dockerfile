@@ -1,17 +1,30 @@
-# Use Python 3.10 as the base image
-FROM python:3.10
+# The builder image, used to build the virtual environment
+FROM python:3.10-slim as builder
 
-RUN mkdir /URL-Shortener
-RUN mkdir /URL-Shortener/url-shortener/
+RUN pip install poetry==1.7.1
 
-COPY /url-shortener /URL-Shortener/url-shortener/
-COPY pyproject.toml /URL-Shortener
-COPY .env /URL-Shortener
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
 
-WORKDIR /URL-Shortener
-ENV PYTHONPATH=${PYTHONPATH}:${PWD} 
+WORKDIR /app
 
+COPY pyproject.toml poetry.lock ./
+RUN touch README.md
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
+
+# The runtime image, used to just run the code provided its virtual environment
+FROM python:3.10-slim as runtime
+
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH"
+
+COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+
+COPY url-shortener ./url-shortener
+
+COPY "run.sh" .
+RUN ["chmod", "+x", "./client.sh"]
+ENTRYPOINT [ "./client.sh" ]

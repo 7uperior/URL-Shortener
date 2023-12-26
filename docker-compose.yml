@@ -8,3 +8,5 @@ services:
       - .:/URL-Shortener/url-shortener
     ports:
       - "8000:8000" # Only if you need to expose ports
+    stdin_open: true
+    tty: true
