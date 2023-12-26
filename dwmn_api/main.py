@@ -11,34 +11,36 @@ def shorten_link(url, token_api):
     return response.json()["id"]
 
 
-def count_the_number_of_clicks_on_bitly_link(url, token_api):
-    headers = {"Authorization": f"Bearer {token_api}"}
+def count_the_number_of_clicks_on_bitly_link(url, api_token):
+    headers = {"Authorization": f"Bearer {api_token}"}
     endpoint = f"https://api-ssl.bitly.com/v4/bitlinks/{url}/clicks/summary"
     response = requests.get(endpoint, headers=headers)
     response.raise_for_status()
     return response.json()["total_clicks"]
 
 
-def is_bitlink(url, token_api):
-    headers = {"Authorization": f"Bearer {token_api}"}
+def is_bitlink(url, api_token):
+    headers = {"Authorization": f"Bearer {api_token}"}
     parsed_url = urlparse(url)
     bitlink = f"{parsed_url.netloc}{parsed_url.path}"
     endpoint = f"https://api-ssl.bitly.com/v4/bitlinks/{bitlink}"
     response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
     if response.ok:
-        pass
+        return True
 
 
 def main():
     url = input("Введите ссылку: ")
-    token_api = os.environ["TOKEN_API_BITLY"]
+    api_token = os.environ["BITLY_API_TOKEN"]
 
     try:
-        if is_bitlink(url, token_api):
-            print(count_the_number_of_clicks_on_bitly_link(url, token_api))
+        if is_bitlink(url, api_token):
+            print(count_the_number_of_clicks_on_bitly_link(url, api_token))
         else:
-            print(shorten_link(url, token_api))
-    except requests.exceptions.HTTPError:
+            print(shorten_link(url, api_token))
+    except requests.exceptions.HTTPError as e:
+        print(e)
         print("Вы ввели некорректную ссылку")
 
 
