@@ -25,7 +25,6 @@ def is_bitlink(url, api_token):
     bitlink = f"{parsed_url.netloc}{parsed_url.path}"
     endpoint = f"https://api-ssl.bitly.com/v4/bitlinks/{bitlink}"
     response = requests.get(endpoint, headers=headers)
-    response.raise_for_status()
     if response.ok:
         return True
 
@@ -39,8 +38,7 @@ def main():
             print(count_the_number_of_clicks_on_bitly_link(url, api_token))
         else:
             print(shorten_link(url, api_token))
-    except requests.exceptions.HTTPError as e:
-        print(e)
+    except requests.exceptions.HTTPError:
         print("Вы ввели некорректную ссылку")
 
 
